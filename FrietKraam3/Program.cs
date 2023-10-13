@@ -11,7 +11,7 @@ namespace FrietKraam3
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddControllersWithViews();
@@ -20,7 +20,16 @@ namespace FrietKraam3
             DbContextOptions.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<FrietKraam3Context>();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddDistributedMemoryCache();
+
+            // session service
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(8);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
 
            
 
@@ -39,6 +48,8 @@ namespace FrietKraam3
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthorization();
 

@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace FrietKraam3.Migrations
 {
     /// <inheritdoc />
-    public partial class Database1 : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,20 +25,6 @@ namespace FrietKraam3.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Menus",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductPrice = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Menus", x => x.ProductId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Owners",
                 columns: table => new
                 {
@@ -48,6 +35,41 @@ namespace FrietKraam3.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Owners", x => x.OwnerId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    CartId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    OrderMade = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.CartId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Menus",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductPrice = table.Column<double>(type: "float", nullable: false),
+                    CartId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Menus", x => x.ProductId);
+                    table.ForeignKey(
+                        name: "FK_Menus_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "CartId");
                 });
 
             migrationBuilder.CreateTable(
@@ -78,6 +100,16 @@ namespace FrietKraam3.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Carts_ProductId",
+                table: "Carts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Menus_CartId",
+                table: "Menus",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
@@ -86,11 +118,22 @@ namespace FrietKraam3.Migrations
                 name: "IX_Orders_ProductId",
                 table: "Orders",
                 column: "ProductId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Carts_Menus_ProductId",
+                table: "Carts",
+                column: "ProductId",
+                principalTable: "Menus",
+                principalColumn: "ProductId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Carts_Menus_ProductId",
+                table: "Carts");
+
             migrationBuilder.DropTable(
                 name: "Orders");
 
@@ -102,6 +145,9 @@ namespace FrietKraam3.Migrations
 
             migrationBuilder.DropTable(
                 name: "Menus");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
         }
     }
 }

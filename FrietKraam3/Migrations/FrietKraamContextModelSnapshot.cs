@@ -22,28 +22,28 @@ namespace FrietKraam3.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FrietKraam3.Models.CartItem", b =>
+            modelBuilder.Entity("FrietKraam3.Models.Cart", b =>
                 {
-                    b.Property<string>("CartItemId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("CartId")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
 
-                    b.Property<DateTime>("DateCreated")
+                    b.Property<DateTime>("OrderMade")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("CartItemId");
+                    b.HasKey("CartId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CartItems");
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("FrietKraam3.Models.Customer", b =>
@@ -114,6 +114,9 @@ namespace FrietKraam3.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
+                    b.Property<int?>("CartId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -123,16 +126,16 @@ namespace FrietKraam3.Migrations
 
                     b.HasKey("ProductId");
 
+                    b.HasIndex("CartId");
+
                     b.ToTable("Menus");
                 });
 
-            modelBuilder.Entity("FrietKraam3.Models.CartItem", b =>
+            modelBuilder.Entity("FrietKraam3.Models.Cart", b =>
                 {
                     b.HasOne("FrietKraam3.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("Product");
                 });
@@ -154,6 +157,18 @@ namespace FrietKraam3.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("FrietKraam3.Models.Product", b =>
+                {
+                    b.HasOne("FrietKraam3.Models.Cart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CartId");
+                });
+
+            modelBuilder.Entity("FrietKraam3.Models.Cart", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("FrietKraam3.Models.Customer", b =>
