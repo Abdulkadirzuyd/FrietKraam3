@@ -11,6 +11,7 @@ namespace FrietKraam3.Data
         public DbSet<Owner> Owners { get; set; } = null!;
         public DbSet<Product> Menus { get; set; } = null!;
         public DbSet<Cart> Carts { get; set; } = null!;
+        public DbSet<CartItem> CartItems { get; set; }
 
         public FrietKraamContext(DbContextOptions<FrietKraamContext> contextOptions) : base(contextOptions)
         {       
