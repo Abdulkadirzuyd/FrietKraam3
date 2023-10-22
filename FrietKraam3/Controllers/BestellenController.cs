@@ -61,10 +61,40 @@ namespace FrietKraam3.Controllers
 
             return RedirectToAction("Index", Products);
         }
+        public async Task<IActionResult> DeleteCart(int ProductId)
+        {
+            // initieer List
+            List<Product>? Products;
 
+            //Check of er al iets in de cart zit
+            if (HttpContext.Session.TryGetValue("Cart", out byte[] ProductsData))
+            {
+                Products = JsonConvert.DeserializeObject<List<Product>>(Encoding.UTF8.GetString(ProductsData));
+            }
+            //Zo niet, maak Cart aan.
+            else
+            {
+                Products = new List<Product>();
+            }
+
+            //initeer variabele om te verwijderen
+            var remove = Products.FirstOrDefault(r => r.ProductId == ProductId);
+
+            //check of dit item bestaat (niet null is)
+            if (remove != null)
+            {
+                //verwijder item uit de storage
+                Products.Remove(remove);
+                //update
+                HttpContext.Session.Set("Cart", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Products)));
+            }
+
+            return RedirectToAction("Index");
+
+        }
         public async Task<IActionResult> ToDatabase()
         {
-            var username = "Adbul";
+            var username = "Abdul";
             var customer = _Context.Customers.FirstOrDefault(c => c.CustomerName == username);
             List<Product> products;
 
@@ -77,34 +107,34 @@ namespace FrietKraam3.Controllers
                 products = new List<Product>();
             }
 
-            
+
             var order = new Order
             {
                 TotalPrice = products.Sum(p => p.ProductPrice),
-                CustomerId = customer.CustomerId, 
+                CustomerId = customer.CustomerId,
             };
 
             _Context.Orders.Add(order);
-            await _Context.SaveChangesAsync(); 
+            await _Context.SaveChangesAsync();
 
-            
+
             foreach (var product in products)
             {
                 var cartItem = new CartItem
                 {
                     ProductId = product.ProductId,
                     OrderId = order.OrderId,
-                    Quantity = 1, 
+                    Quantity = 1,
                 };
 
                 _Context.CartItems.Add(cartItem);
             }
 
-            await _Context.SaveChangesAsync(); 
-            
+            await _Context.SaveChangesAsync();
+
             HttpContext.Session.Remove("Cart");
 
-            return View(); 
+            return View();
         }
     }
 
