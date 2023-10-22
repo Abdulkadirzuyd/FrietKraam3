@@ -73,8 +73,13 @@
                     }
                 </div>
                 <div class="card-footer winkelwagen">
-                    <form asp-action="ShowCart" >
-                        <button class="btn btn-dark btn-outline-secondary text-light" type="submit"> Bestellen </button>
+                    <form asp-action="ToDatabase" class="btn text-light btn-outline-secondary">
+                        <td>
+                            <input type="hidden" name="ProductName" value="" />
+                            <input type="hidden" name="ProductPrice" value="" />
+                            <input type="hidden" name="ProductId" value="" />
+                        </td>
+                        <button class="btn btn-dark" type="submit"> Bestellen </button>
                     </form>
                 </div>
             </div>

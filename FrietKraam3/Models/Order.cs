@@ -8,7 +8,6 @@ namespace FrietKraam3.Models
     {
         
         public int OrderId { get; set; }
-        
         public double TotalPrice { get; set; }
         public virtual Customer? Customer { get; set; }
         public int CustomerId { get; set; } 

@@ -22,20 +22,20 @@ namespace FrietKraam3.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-              return _context.Menus != null ? 
-                          View(await _context.Menus.ToListAsync()) :
+              return _context.Products != null ? 
+                          View(await _context.Products.ToListAsync()) :
                           Problem("Entity set 'FrietKraamContext.Menus'  is null.");
         }
 
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Menus == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Menus
+            var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -70,12 +70,12 @@ namespace FrietKraam3.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Menus == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Menus.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -121,12 +121,12 @@ namespace FrietKraam3.Controllers
         // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Menus == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Menus
+            var product = await _context.Products
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -141,14 +141,14 @@ namespace FrietKraam3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Menus == null)
+            if (_context.Products == null)
             {
                 return Problem("Entity set 'FrietKraamContext.Menus'  is null.");
             }
-            var product = await _context.Menus.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Menus.Remove(product);
+                _context.Products.Remove(product);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace FrietKraam3.Controllers
 
         private bool ProductExists(int id)
         {
-          return (_context.Menus?.Any(e => e.ProductId == id)).GetValueOrDefault();
+          return (_context.Products?.Any(e => e.ProductId == id)).GetValueOrDefault();
         }
     }
 }
